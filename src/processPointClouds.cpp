@@ -53,11 +53,9 @@ typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::FilterCloud(ty
     cropRoofFilter.setMax(Eigen::Vector4f(2.6, 1.7, -0.4, 1));
     cropRoofFilter.filter(indices);
 
-    
     pcl::PointIndices::Ptr inliers{new pcl::PointIndices};
     for(int point: indices)
         inliers->indices.push_back(point);
-
 
     typename pcl::PointCloud<PointT>::Ptr FinalCloud(new pcl::PointCloud<PointT>); 
     pcl::ExtractIndices<PointT> extract;
@@ -97,13 +95,13 @@ typename std::unordered_set<int> ProcessPointClouds<PointT>::Ransac3D(typename p
 	{
 		std::unordered_set<int> inliers;
 		
-		while(inliers.size() < 3) //collect 2 points to draw a line
+		while(inliers.size() < 3) //collect 3 points to draw a plane
 		{
 			int index = rand()%(cloud->points.size());
 			inliers.insert(index);
 		}
 
-		//extract x,y points------------------------------------------------------------------->
+		//extract x,y, z points------------------------------------------------------------------->
 		//unordered_set<int> :: iterator itr;
 		auto itr = (inliers.begin()); 
 
@@ -125,7 +123,7 @@ typename std::unordered_set<int> ProcessPointClouds<PointT>::Ransac3D(typename p
 		float C = (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1);
 		float D = -(A*x1 + B*y1 + C*z1);
 
-		// get a random point other than the 2 points of the line selected above----------------->
+		// get a random point other than the 3 points of the plane selected above----------------->
 		for(int ind = 0; ind < cloud->points.size(); ind++)
 		{
 			if(inliers.count(ind) != 1)  //the point is not present in the inliers 
@@ -134,7 +132,7 @@ typename std::unordered_set<int> ProcessPointClouds<PointT>::Ransac3D(typename p
 				float y = cloud->points[ind].y;
 				float z = cloud->points[ind].z;		
 				
-				float d = fabs(A*x + B*y + C*z + D)/sqrt(A*A + B*B + C*C);  //distance to the line using the formula: Distance d=∣Ax+By+C∣/sqrt(A^2+B^2)
+				float d = fabs(A*x + B*y + C*z + D)/sqrt(A*A + B*B + C*C);  //distance to the plane using the formula: Distance d=∣Ax+By+C∣/sqrt(A^2+B^2)
 
 				if(d <= distanceTol)
 				{

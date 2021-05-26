@@ -100,7 +100,7 @@ std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<flo
 
 	std::vector<std::vector<int>> clusters;
 
-	std::vector<bool> processed(points.size(), false);
+	std::vector<bool> processed(points.size(), false);  //initialize the memebers as 'false'
 
 	int i = 0;
 
