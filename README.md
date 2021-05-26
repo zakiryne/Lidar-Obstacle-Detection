@@ -120,7 +120,6 @@ Now, to detect object we create a pipeline as follows:
 Combining the above mentioned steps will bring a beautiful algorithm to detect obstalce using Lidar.
 
 
-	
 ## Installation
 
 ### Ubuntu 
